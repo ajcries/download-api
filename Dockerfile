@@ -1,17 +1,15 @@
-# Change v1.40.0 to v1.57.0
-FROM mcr.microsoft.com/playwright/python:v1.57.0-jammy
+# Use slim python (saves ~800MB vs the Playwright image)
+FROM python:3.10-slim
 
-# Install FFmpeg for video processing
-RUN apt-get update && apt-get install -y ffmpeg
+# Install ffmpeg for the piping
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your code
 COPY . .
 
-# Start the API
-CMD ["gunicorn", "-b", "0.0.0.0:10000", "api:api_app"]
+# Use 1 worker to stay inside the 512MB RAM limit
+CMD ["gunicorn", "--workers", "1", "--timeout", "120", "-b", "0.0.0.0:10000", "api:api_app"]
