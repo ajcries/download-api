@@ -1,0 +1,7 @@
+flask
+flask-cors
+requests
+beautifulsoup4
+playwright
+m3u8
+gunicorn
