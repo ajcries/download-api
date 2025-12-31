@@ -223,4 +223,6 @@ def api_download():
     )
 
 if __name__ == "__main__":
-    api_app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    # For Docker on Render, 10000 is the standard port
+    port = int(os.environ.get("PORT", 10000))
+    api_app.run(host='0.0.0.0', port=port)
